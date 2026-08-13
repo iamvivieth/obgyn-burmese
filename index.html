@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ภาษาต่างด้าว ใน OBGYN — พม่าฉบับใช้งานจริง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mali:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Noto+Sans+Myanmar:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#2fb8a8;--mint-d:#1d9488;--coral:#ff6f91;--coral-d:#f0396a;
+    --pink-soft:#ffe3ec;--cream:#fff8f1;--ink:#28414a;--ink-soft:#5c7079;
+    --yellow:#ffd166;--lilac:#a78bfa;--accent:var(--mint);--accent-d:var(--mint-d);
+    --bg1:#eafaf6;--bg2:#fff6f8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Noto Sans Thai','Mali',sans-serif;background:#0e1417;color:var(--ink);overflow:hidden}
+  #deck{position:fixed;inset:0}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    padding:2.4vh 4.5vw 5.5vh;text-align:center;background:linear-gradient(150deg,var(--bg1),var(--bg2));overflow:hidden}
+  .slide.active{display:flex;animation:slideIn .5s cubic-bezier(.22,1,.36,1)}
+  .slide.back.active{animation:slideInBack .5s cubic-bezier(.22,1,.36,1)}
+  @keyframes slideIn{from{opacity:0;transform:translateX(6%) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes slideInBack{from{opacity:0;transform:translateX(-6%) scale(.97)}to{opacity:1;transform:none}}
+  .blob{position:absolute;border-radius:50%;filter:blur(2px);opacity:.35;z-index:0;pointer-events:none}
+  .blob.b1{width:36vw;height:36vw;background:radial-gradient(circle,#bff3ea,transparent 70%);top:-10vw;left:-8vw}
+  .blob.b2{width:30vw;height:30vw;background:radial-gradient(circle,#ffd9e4,transparent 70%);bottom:-10vw;right:-6vw}
+  .slide>*{position:relative;z-index:1}
+  .pop{opacity:0}
+  .slide.active .pop{animation:popIn .5s cubic-bezier(.22,1.4,.4,1) forwards;animation-delay:calc(var(--i,0)*.1s + .1s)}
+  @keyframes popIn{0%{opacity:0;transform:translateY(24px) scale(.9)}60%{opacity:1}100%{opacity:1;transform:none}}
+  h1{font-family:'Baloo 2';font-weight:800;line-height:1.1}
+  .kicker{font-family:'Baloo 2';font-weight:700;letter-spacing:.03em;color:var(--accent-d);background:#fff;
+    border:2px solid var(--accent);border-radius:999px;padding:.35em 1.2em;font-size:clamp(.8rem,1.9vw,1.15rem);
+    display:inline-block;box-shadow:0 6px 0 rgba(0,0,0,.05)}
+  .lead{color:var(--ink-soft);font-size:clamp(1rem,2.3vw,1.5rem);font-weight:500;max-width:26ch;line-height:1.5}
+  .mascot{font-size:clamp(2.4rem,7vw,5rem);display:inline-block;animation:bob 2.4s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.12))}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+  .corner-mascot{position:absolute;bottom:2.5vh;left:2.5vw;font-size:clamp(1.8rem,4vw,3rem);z-index:2;animation:bob 3s ease-in-out infinite;opacity:.9}
+  .title-wrap h1{font-size:clamp(2.2rem,7vw,5.4rem);color:var(--ink)}
+  .title-wrap .hl{color:var(--coral-d)}
+  .subtitle{font-size:clamp(1.05rem,2.6vw,1.7rem);color:var(--ink-soft);font-weight:600;margin-top:.4em}
+  .lang-chips{display:flex;gap:.6em;flex-wrap:wrap;justify-content:center;margin-top:1.4em}
+  .chip{background:#fff;border-radius:14px;padding:.5em 1em;font-weight:600;color:var(--ink-soft);border:2px solid #eadfd6;font-size:clamp(.75rem,1.8vw,1.05rem)}
+  .chip.on{background:var(--coral);color:#fff;border-color:var(--coral-d);transform:scale(1.12);box-shadow:0 10px 20px rgba(240,57,106,.35)}
+  .divider .big-emoji{font-size:clamp(3.4rem,13vw,9rem);line-height:1}
+  .divider h1{font-size:clamp(1.9rem,6vw,4.4rem)}
+  .sec-num{font-family:'Baloo 2';font-weight:800;color:#fff;background:var(--accent);width:clamp(2.6rem,6vw,4rem);height:clamp(2.6rem,6vw,4rem);
+    border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(1.2rem,3vw,2rem);margin:0 auto .3em}
+  .phrase-grid{display:flex;flex-direction:column;gap:clamp(.4rem,1.1vh,.75rem);width:100%;max-width:1080px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.7rem,2vw,1.3rem)}
+  @media(max-width:760px){.row2{grid-template-columns:1fr}}
+  .card{background:#fff;border-radius:20px;padding:clamp(.5rem,1.4vh,.85rem) clamp(1rem,2.6vw,1.5rem);
+    box-shadow:0 12px 30px rgba(40,65,74,.11);border:2px solid #fff;text-align:left;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--accent)}
+  .card.warn::before{background:repeating-linear-gradient(45deg,var(--coral),var(--coral) 6px,#ffd0dc 6px,#ffd0dc 12px)}
+  .card .en{font-size:clamp(.68rem,1.4vw,.9rem);color:var(--ink-soft);font-weight:600;letter-spacing:.02em;text-transform:uppercase;opacity:.7}
+  .card .th-mean{font-size:clamp(.9rem,1.95vw,1.24rem);font-weight:700;color:var(--ink);margin:.05em 0 .22em;line-height:1.25}
+  .say{display:flex;align-items:center;gap:.5em;flex-wrap:wrap}
+  .say-tag{background:var(--coral);color:#fff;font-family:'Baloo 2';font-weight:700;font-size:clamp(.6rem,1.25vw,.8rem);padding:.18em .7em;border-radius:999px;white-space:nowrap;box-shadow:0 4px 10px rgba(240,57,106,.3)}
+  .say-text{font-family:'Mali';font-weight:700;color:var(--coral-d);font-size:clamp(1rem,2.3vw,1.5rem);line-height:1.2}
+  .bur-row{display:flex;align-items:center;gap:.5em;flex-wrap:wrap;margin-top:.28em}
+  .bur{display:inline-flex;align-items:baseline;gap:.55em;flex-wrap:wrap;background:var(--pink-soft);border-radius:12px;padding:.3em .8em}
+  .card.warn .bur{background:#fff2f5;border:1.5px dashed var(--coral)}
+  .bur .my{font-family:'Noto Sans Myanmar';font-weight:600;color:#b32357;font-size:clamp(.95rem,2.15vw,1.45rem);line-height:1.5}
+  .bur .rom{font-size:clamp(.68rem,1.5vw,.95rem);color:#9a6b7c;font-style:italic;font-weight:500}
+  .flag{font-size:clamp(.6rem,1.25vw,.8rem);font-weight:700;color:#c81e52;background:#ffe0e8;border:1px solid #ffb9cb;border-radius:999px;padding:.12em .6em;white-space:nowrap}
+  .play-btn{border:none;cursor:pointer;font-family:'Baloo 2','Noto Sans Thai',sans-serif;font-weight:700;
+    background:linear-gradient(90deg,var(--mint),var(--mint-d));color:#fff;border-radius:999px;padding:.34em .9em;
+    font-size:clamp(.7rem,1.45vw,.95rem);display:inline-flex;align-items:center;gap:.3em;box-shadow:0 6px 14px rgba(29,148,136,.32);transition:transform .12s;white-space:nowrap}
+  .play-btn:hover{transform:translateY(-1px)}.play-btn:active{transform:scale(.94)}
+  .play-btn.playing{animation:pjump .5s ease infinite;background:linear-gradient(90deg,var(--coral),var(--coral-d));box-shadow:0 6px 14px rgba(240,57,106,.4)}
+  .play-btn.loading{opacity:.7}
+  @keyframes pjump{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .play-btn.mini{padding:.26em .66em;font-size:clamp(.64rem,1.35vw,.82rem)}
+  .play-btn.mini .pl{display:none}
+  .ram{display:inline-flex;align-items:center;gap:.5em;background:linear-gradient(90deg,var(--coral),var(--coral-d));color:#fff;font-family:'Baloo 2';font-weight:800;
+    border-radius:999px;padding:.5em 1.4em;font-size:clamp(1rem,2.6vw,1.7rem);box-shadow:0 12px 26px rgba(240,57,106,.4);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  .mic{animation:wob 1.2s ease-in-out infinite;display:inline-block}
+  @keyframes wob{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+  .activity{background:linear-gradient(150deg,#fff4d6,#ffe3ec)}
+  .act-card{background:#fff;border-radius:28px;padding:clamp(1.3rem,3.5vh,2.4rem) clamp(1.4rem,5vw,3rem);box-shadow:0 20px 50px rgba(40,65,74,.16);max-width:920px;border:3px dashed var(--coral)}
+  .act-badge{font-family:'Baloo 2';font-weight:800;color:#fff;background:var(--coral);border-radius:999px;padding:.3em 1.2em;display:inline-block;font-size:clamp(.85rem,2vw,1.2rem);margin-bottom:.5em}
+  .act-steps{text-align:left;font-size:clamp(.95rem,2.2vw,1.4rem);line-height:1.55;color:var(--ink);margin-top:.5em}
+  .act-steps li{margin:.35em 0 .35em 1.2em}
+  .num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(.5rem,1.5vw,1rem);max-width:1000px;width:100%}
+  @media(max-width:680px){.num-grid{grid-template-columns:repeat(2,1fr)}}
+  .num{background:#fff;border-radius:18px;padding:clamp(.6rem,1.7vh,1rem) .4rem;box-shadow:0 10px 22px rgba(40,65,74,.1)}
+  .num .d{font-family:'Baloo 2';font-weight:800;font-size:clamp(1.3rem,3.3vw,2.2rem);color:var(--mint-d)}
+  .num .say-text{font-size:clamp(.95rem,2.2vw,1.5rem)}
+  .num .my{font-family:'Noto Sans Myanmar';color:#b32357;font-size:clamp(.85rem,1.9vw,1.2rem)}
+  .num .play-btn{margin-top:.35em}
+  .slide-title{font-family:'Baloo 2';font-weight:800;font-size:clamp(1.25rem,3.5vw,2.2rem);color:var(--ink);margin-bottom:.15em;line-height:1.2}
+  .slide-title .em{font-size:1.15em}
+  .slide-sub{color:var(--ink-soft);font-weight:600;font-size:clamp(.8rem,1.9vw,1.15rem);margin-bottom:.7em}
+  .note-box{background:#fff;border-left:8px solid var(--yellow);border-radius:14px;padding:1em 1.4em;max-width:860px;text-align:left;
+    font-size:clamp(.88rem,1.95vw,1.18rem);color:var(--ink);line-height:1.55;box-shadow:0 10px 24px rgba(40,65,74,.1)}
+  .list10{text-align:left;max-width:920px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.4em .9em;font-size:clamp(.85rem,1.9vw,1.2rem);color:var(--ink);font-weight:600}
+  @media(max-width:700px){.list10{grid-template-columns:1fr}}
+  .list10 .n{display:inline-flex;width:1.7em;height:1.7em;border-radius:50%;background:var(--accent);color:#fff;font-family:'Baloo 2';font-weight:800;align-items:center;justify-content:center;margin-right:.5em;font-size:.85em}
+  .list10 div{display:flex;align-items:center;background:#fff;border-radius:12px;padding:.4em .7em;box-shadow:0 5px 14px rgba(40,65,74,.07)}
+  .oneliner{background:#fff;border-radius:24px;padding:clamp(1.2rem,3.5vh,2.2rem) clamp(1.4rem,5vw,2.8rem);box-shadow:0 18px 44px rgba(40,65,74,.14);max-width:900px;border:3px solid var(--coral)}
+  .oneliner .seq{font-family:'Mali';font-weight:700;color:var(--coral-d);font-size:clamp(1.05rem,2.6vw,1.8rem);line-height:1.7}
+  #bar{position:fixed;top:0;left:0;height:6px;background:linear-gradient(90deg,var(--coral),var(--mint));z-index:50;transition:width .4s ease;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+  #counter{position:fixed;bottom:2.2vh;right:2.4vw;z-index:50;font-family:'Baloo 2';font-weight:700;color:var(--ink-soft);background:#fff;border-radius:999px;padding:.3em 1em;font-size:clamp(.75rem,1.6vw,1rem);box-shadow:0 6px 16px rgba(40,65,74,.14)}
+  #hint{position:fixed;bottom:2.2vh;left:50%;transform:translateX(-50%);z-index:50;color:var(--ink-soft);font-size:.78rem;background:rgba(255,255,255,.7);border-radius:999px;padding:.25em .9em;opacity:.75;max-width:60vw;text-align:center}
+  .nav-btn{position:fixed;top:50%;transform:translateY(-50%);z-index:50;background:#fff;border:none;width:clamp(2.4rem,5vw,3.4rem);height:clamp(2.4rem,5vw,3.4rem);border-radius:50%;cursor:pointer;font-size:1.4rem;color:var(--accent-d);box-shadow:0 8px 20px rgba(40,65,74,.18);opacity:.55;transition:opacity .2s}
+  .nav-btn:hover{opacity:1}#prev{left:1.5vw}#next{right:1.5vw}
+  #audio-mode{position:fixed;top:1.4vh;right:2.4vw;z-index:55;font-family:'Baloo 2','Noto Sans Thai',sans-serif;font-weight:700;font-size:clamp(.66rem,1.4vw,.9rem);background:#fff;color:var(--ink-soft);border:2px solid #e7dccf;border-radius:999px;padding:.3em .9em;cursor:pointer;box-shadow:0 5px 14px rgba(40,65,74,.12)}
+  #audio-mode b{color:var(--mint-d)}
+  #toast{position:fixed;bottom:8vh;left:50%;transform:translateX(-50%) translateY(20px);z-index:60;background:var(--ink);color:#fff;padding:.6em 1.1em;border-radius:12px;font-size:.85rem;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;max-width:82vw;text-align:center;line-height:1.4}
+  #toast.show{opacity:.97;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="deck"></div>
+<button class="nav-btn" id="prev" aria-label="ก่อนหน้า">‹</button>
+<button class="nav-btn" id="next" aria-label="ถัดไป">›</button>
+<div id="counter"></div>
+<div id="hint">◀ ▶ เปลี่ยนสไลด์ · 🔊 กดฟังเสียงพม่า (ต้องมีเน็ต)</div>
+<button id="audio-mode" title="สลับแหล่งเสียง">🌐 เสียง: <b>ออนไลน์</b></button>
+<div id="toast"></div>
+
+<script>
+const THEMES = {
+  intro:{a:'#2fb8a8',ad:'#1d9488',b1:'#eafaf6',b2:'#fff6f8'},
+  ob:{a:'#ff6f91',ad:'#f0396a',b1:'#ffeef3',b2:'#fff6ee'},
+  gyne:{a:'#8b5cf6',ad:'#6d28d9',b1:'#f3ecff',b2:'#ffeef6'},
+  post:{a:'#f5a524',ad:'#d98209',b1:'#fff6e2',b2:'#ffefe6'},
+  summary:{a:'#2fb8a8',ad:'#1d9488',b1:'#eafaf6',b2:'#fff3f6'},
+  activity:{a:'#f0396a',ad:'#c81e52',b1:'#fff4d6',b2:'#ffe3ec'}
+};
+const spk = (my, cls='play-btn') =>
+  my ? `<button class="${cls}" data-my="${my.replace(/"/g,'&quot;')}" aria-label="ฟังเสียงพม่า">🔊 <span class="pl">ฟังเสียง</span></button>` : '';
+const card = (o) => `
+  <div class="card pop ${o.warn?'warn':''}" style="--i:${o.i||0}">
+    <div class="en">${o.en||''}</div>
+    <div class="th-mean">${o.mean}</div>
+    <div class="say"><span class="say-tag"><span class="mic">🗣️</span> พูดตาม</span><span class="say-text">${o.say||''}</span></div>
+    <div class="bur-row">
+      <span class="bur"><span class="my">${o.my}</span>${o.rom?`<span class="rom">${o.rom}</span>`:''}</span>
+      ${spk(o.my)}
+      ${o.warn?'<span class="flag">⚠️ เช็คสำเนียง</span>':''}
+    </div>
+  </div>`;
+const num = (o,i) => `
+  <div class="num pop" style="--i:${i}">
+    <div class="d">${o.d}</div><div class="say-text">${o.say}</div><div class="my">${o.my}</div>${spk(o.my,'play-btn mini')}
+  </div>`;
+
+const S = [];
+const push = (o)=>S.push(o);
+
+/* ===== INTRO ===== */
+push({theme:'intro',mascot:'🩺',html:`
+  <div class="title-wrap">
+    <div class="mascot pop">🤰🩺👶</div>
+    <div class="kicker pop" style="--i:1">Workshop · สื่อสารกับผู้ป่วยต่างด้าว</div>
+    <h1 class="pop" style="--i:2">ภาษาต่างด้าว ใน <span class="hl">OBGYN</span></h1>
+    <div class="subtitle pop" style="--i:3">เรียนภาษา<b style="color:var(--coral-d)">พม่า</b>ฉบับใช้งานจริง — ถามประวัติ &amp; สื่อสารข้างเตียง</div>
+    <div class="lang-chips">
+      <span class="chip on pop" style="--i:4">🇲🇲 วันนี้เน้น: พม่า</span>
+      <span class="chip pop" style="--i:5">กะเหรี่ยง</span>
+      <span class="chip pop" style="--i:5">กัมพูชา</span>
+      <span class="chip pop" style="--i:6">ลาว</span>
+    </div>
+  </div>`});
+
+push({theme:'intro',mascot:'😰',html:`
+  <div class="mascot pop">🌙🏥</div>
+  <div class="kicker pop" style="--i:1">ตี 3 · ห้องคลอด</div>
+  <h1 class="pop" style="--i:2" >คุณแม่ชาวพม่ามาคลอด…</h1>
+  <p class="lead pop" style="--i:3">เจ็บท้อง ร้องไห้ กลัว — และ<b style="color:var(--coral-d)">พูดไทยไม่ได้เลย</b></p>
+  <p class="lead pop" style="--i:4" style="margin-top:.5em">ถ้าเป็นคุณ… จะเริ่มซักประวัติยังไง?</p>
+  <div class="ram pop" style="--i:5" style="margin-top:1.1em">คำถามไม่กี่คำ เปลี่ยนทุกอย่างได้ ✨</div>`});
+
+push({theme:'intro',mascot:'🎤',cls:'activity',html:`
+  <div class="act-card">
+    <span class="act-badge pop">กติกา · How to play</span>
+    <div class="ram pop" style="--i:1" style="font-size:clamp(1.2rem,3.6vw,2.2rem)"><span class="mic">🎤</span> “REPEAT AFTER ME!”</div>
+    <ol class="act-steps">
+      <li class="pop" style="--i:2">เห็นป้าย <span class="say-tag" style="display:inline-block">🗣️ พูดตาม</span> → ทั้งห้องอ่าน<b style="color:var(--coral-d)">บรรทัดชมพู</b> (คำอ่านไทย) พร้อมกัน</li>
+      <li class="pop" style="--i:3">กดปุ่ม <span class="play-btn" style="display:inline-flex">🔊 ฟังเสียง</span> เพื่อฟัง<b>เสียงพม่าจริง</b>ก่อนพูดตาม (ต้องมีเน็ต)</li>
+      <li class="pop" style="--i:4">เห็น <span class="flag" style="display:inline">⚠️ ตรวจสำเนียง</span> = ประโยคนี้ยังไม่ได้ยืนยันโดยเจ้าของภาษา ใช้ด้วยความระวัง</li>
+    </ol>
+  </div>`});
+
+push({theme:'intro',mascot:'🔤',html:`
+  <div class="slide-title pop">อ่านการ์ดยังไง 👀</div>
+  <div class="phrase-grid" style="max-width:920px">
+    <div class="pop" style="--i:1">${card({en:'ตัวอย่าง',mean:'ตั้งครรภ์อยู่ไหมคะ',say:'โก่-วุน ชิ ลา',my:'ကိုယ်ဝန် ရှိလား',rom:'ko-won shi lar'})}</div>
+    <div class="row2 pop" style="--i:2">
+      <div class="card"><div class="en">บรรทัดชมพู 🗣️</div><div class="th-mean">คำอ่านไทย = พูดตามอันนี้</div></div>
+      <div class="card"><div class="en">กล่องพม่า 🇲🇲 + 🔊</div><div class="th-mean">ตัวเขียนจริง · กดฟังเสียง</div></div>
+    </div>
+  </div>`});
+
+/* ===== OB CLINIC ===== */
+push({theme:'ob',divider:true,mascot:'🤰',html:`
+  <div class="sec-num pop">OB</div>
+  <div class="big-emoji pop" style="--i:1">🤰</div>
+  <h1 class="pop" style="--i:2">คลินิกฝากครรภ์</h1>
+  <p class="lead pop" style="--i:3">ประวัติตั้งครรภ์ · อาการปัจจุบัน · คัดกรองภาวะแทรกซ้อน</p>`});
+
+push({theme:'ob',mascot:'📅',html:`
+  <div class="slide-title pop">① ประวัติตั้งครรภ์พื้นฐาน</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'how many weeks pregnant?',mean:'ตอนนี้ตั้งครรภ์กี่สัปดาห์แล้วคะ',say:'โก่-วุน เบ-นะ-ปัต ชิ ปยี แล',my:'ကိုယ်ဝန် ဘယ်နှစ်ပတ် ရှိပြီလဲ',rom:'ko-won beh-hna-pat shi-pyi leh'})}
+    ${card({i:2,en:'first day of last period?',mean:'ประจำเดือนครั้งสุดท้าย วันแรกเมื่อไหร่คะ',say:'เนาะ-โซน มี-ยะ สะ-เดะ เยะ เบ-โตน-กะ แล',my:'နောက်ဆုံး မီးယပ် စတဲ့ ရက် ဘယ်တုန်းကလဲ',rom:'nauk-son mee-yat sa-deh yet…',warn:true})}
+    ${card({i:3,en:'how many pregnancies / births / miscarriages?',mean:'เคยตั้งครรภ์ คลอด หรือแท้งกี่ครั้งคะ',say:'โก่-วุน · เมว · โก่-วุน-เปียะ เบ-นะ-เจน ชิ แล',my:'ကိုယ်ဝန်၊ မွေးဖွား၊ ကိုယ်ဝန်ပျက် ဘယ်နှစ်ကြိမ် ရှိခဲ့လဲ',rom:'…beh-hna-jayn shi-kheh leh',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'🩸',html:`
+  <div class="slide-title pop">② อาการปัจจุบัน — ต้องถาม (1/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'any vaginal bleeding?',mean:'มีเลือดออกทางช่องคลอดไหมคะ',say:'มิน-มะ-โก-กะ ทเว จะ เน ลา',my:'မိန်းမကိုယ်က သွေး ကျနေလား',rom:'mein-ma-ko-ga thway kya nay lar'})}
+    ${card({i:2,en:'any leaking of fluid or water?',mean:'มีน้ำใสๆ / น้ำเดินไหมคะ',say:'เย (อะ-เยง) ยอ ทเวะ เน ลา',my:'ရေ (အရည်) ယို ထွက်နေလား',rom:'ye (a-ye) yo twet nay lar',warn:true})}
+    ${card({i:3,en:'abdominal pain or contractions?',mean:'มีปวดท้องหรือท้องแข็งไหมคะ',say:'ไบะ นา ลา · ไบะ ติน ลา',my:'ဗိုက်နာလား၊ ဗိုက်တင်းလား',rom:'baik na lar, baik tin lar',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'👶',html:`
+  <div class="slide-title pop">② อาการปัจจุบัน — ต้องถาม (2/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'how often does your abdomen tighten?',mean:'ท้องแข็งบ่อยแค่ไหนคะ',say:'ไบะ เบ-เลาะ กยา-กยา ติน แล',my:'ဗိုက် ဘယ်လောက် ခဏခဏ တင်းလဲ',rom:'baik beh-lauk kha-na-kha-na tin leh',warn:true})}
+    ${card({i:2,en:'can you feel the baby moving?',mean:'รู้สึกลูกดิ้นไหมคะ',say:'คะ-เล ลุ-ยา-ตา ชิ ลา',my:'ကလေး လှုပ်ရှားတာ ခံစားရလား',rom:'kha-lay hluq-sha-da khan-sa-ya lar',warn:true})}
+    ${card({i:3,en:'is the baby moving as usual?',mean:'ลูกดิ้นเท่าเดิมไหมคะ',say:'คะ-เล ก่า-ตายง-โล ลุ-ยา ลา',my:'ကလေး ခါတိုင်းလို လှုပ်ရှားလား',rom:'kha-lay kha-taing-lo hluq-sha lar',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'⚠️',html:`
+  <div class="slide-title pop">③ คัดกรองครรภ์เป็นพิษ (1/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'severe headache?',mean:'ปวดศีรษะมากไหมคะ',say:'ก่อง อะ-หยั่น ไก่ ลา',my:'ခေါင်း အရမ်း ကိုက်လား',rom:'khaung a-yan kaik lar',warn:true})}
+    ${card({i:2,en:'blurred vision or flashing lights?',mean:'ตามัวหรือเห็นแสงวูบวาบไหมคะ',say:'เมี่ยะ-สิ วา ลา · อะ-ลิน บยา-บยา มยิน ลา',my:'မျက်စိ ဝါးလား၊ အလင်း ဗျာဗျာ မြင်လား',rom:'myet-si wa lar…',warn:true})}
+    ${card({i:3,en:'pain under right ribs / upper abdomen?',mean:'เจ็บลิ้นปี่หรือชายโครงขวาไหมคะ',say:'นัน-โยว ญา-เบะ เอาะ-มา นา ลา',my:'နံရိုး ညာဘက် အောက်မှာ နာလား',rom:'nan-yo nya-bet auk-hma na lar',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'💧',html:`
+  <div class="slide-title pop">③ คัดกรองครรภ์เป็นพิษ (2/2)</div>
+  <div class="phrase-grid" style="max-width:820px">
+    ${card({i:1,en:'sudden swelling of face or hands?',mean:'หน้าหรือมือบวมขึ้นมากไหมคะ',say:'เมี่ยะ-หน่า (โต้) เละ โยะ-ตะ-เยะ เพา ลา',my:'မျက်နှာ (သို့) လက် ရုတ်တရက် ဖောင်းလား',rom:'myet-hna (or) let yote-ta-yet phaung lar',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'🤒',html:`
+  <div class="slide-title pop">④ การติดเชื้อ / ทางเดินปัสสาวะ</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'do you have fever?',mean:'มีไข้ไหมคะ',say:'ปยา เน ลา',my:'ဖျားနေလား',rom:'pya nay lar',warn:true})}
+    ${card({i:2,en:'does it hurt when you urinate?',mean:'ปัสสาวะแสบขัดไหมคะ',say:'สี่ ตวา เดะ-อะ-คา นา ลา',my:'ဆီး သွားတဲ့အခါ နာလား',rom:'see thwa-deh-a-kha na lar',warn:true})}
+    ${card({i:3,en:'urinating more often than usual?',mean:'ปัสสาวะบ่อยผิดปกติไหมคะ',say:'สี่ กยา-กยา ตวา ลา',my:'ဆီး ခဏခဏ သွားလား',rom:'see kha-na-kha-na thwa lar',warn:true})}
+    ${card({i:4,en:'abnormal discharge, smell, or itching?',mean:'มีตกขาวผิดปกติ มีกลิ่น หรือคันไหมคะ',say:'อะ-เยง-กยี มะ-มัน · อะ-นัน โต้ ยา ลา',my:'အရည်ကြည် မမှန်ဘူး၊ အနံ့ (သို့) ယားလား',rom:'a-ye-kyi ma-hman…',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'📋',html:`
+  <div class="slide-title pop">⑤ ประวัติครรภ์ก่อน (1/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'previous delivery — vaginal or C-section?',mean:'ครรภ์ก่อนคลอดธรรมชาติหรือผ่าคลอดคะ',say:'อะ-ยิน-กะ ตะ-บ่า-วะ เมว ลา · เจว-เซะ เมว ลา',my:'အရင်က သဘာဝ မွေးလား၊ ခွဲစိတ် မွေးလား',rom:'a-yin-ga tha-ba-wa mway lar…',warn:true})}
+    ${card({i:2,en:'why did you have a C-section?',mean:'ตอนนั้นผ่าคลอดเพราะอะไรคะ',say:'บา-จ่อง เจว-เซะ-เจ่-ตา แล',my:'ဘာကြောင့် ခွဲစိတ်ခဲ့တာလဲ',rom:'ba-jaung khwe-seik-kheh-da leh',warn:true})}
+  </div>`});
+
+push({theme:'ob',mascot:'⚖️',html:`
+  <div class="slide-title pop">⑤ ประวัติครรภ์ก่อน (2/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'born at term or prematurely?',mean:'คลอดครบกำหนดหรือก่อนกำหนดคะ',say:'อะ-เชน-ตัน เมว ลา · เซา-ปยี เมว ลา',my:'အချိန်တန် မွေးလား၊ စောပြီး မွေးလား',rom:'a-chein-tan mway lar…',warn:true})}
+    ${card({i:2,en:"baby's birth weight?",mean:'ลูกน้ำหนักแรกเกิดเท่าไหร่คะ',say:'คะ-เล เมว-โตน เบ-เลาะ เล แล',my:'ကလေး မွေးတုန်း ဘယ်လောက် လေးလဲ',rom:'kha-lay mway-tone beh-lauk le leh',warn:true})}
+    ${card({i:3,en:'any complications before?',mean:'ครรภ์ก่อนมีภาวะแทรกซ้อนอะไรไหมคะ',say:'อะ-ยิน โก่-วุน-เดว-มา ปยะ-ตะ-หน่า ชิ เจ่ ลา',my:'အရင် ကိုယ်ဝန်တွေမှာ ပြဿနာ ရှိခဲ့လား',rom:'a-yin ko-won-dwe-hma pyat-tha-na shi-kheh lar',warn:true})}
+    ${card({i:4,en:'preeclampsia / GDM / PPH history?',mean:'เคยครรภ์เป็นพิษ เบาหวานขณะตั้งครรภ์ หรือตกเลือดหลังคลอดไหมคะ',say:'(ดูคำอังกฤษ)',my:'ကိုယ်ဝန်ကြောင့် သွေးတိုး၊ ဆီးချို၊ မွေးပြီး သွေးများ ထွက်ဖူးလား',rom:'…thway-to, see-cho…',warn:true})}
+  </div>`});
+
+/* ===== DELIVERY ROOM (verified) ===== */
+push({theme:'ob',mascot:'💪',html:`
+  <div class="slide-title pop">🏥 ในห้องคลอด — คำสั่งสำคัญ <span class="flag" style="font-size:.5em;vertical-align:middle">✓ ยืนยันจากคู่มือแพทย์</span></div>
+  <div class="phrase-grid">
+    <div class="row2">
+      ${card({i:1,en:'do not push yet',mean:'อย่าเพิ่งเบ่งนะคะ ✋',say:'มะ หญิ แน โอน',my:'မညှစ်နဲ့အုံး',rom:'ma-hnyit neh own'})}
+      ${card({i:2,en:'push now',mean:'เบ่งได้เลยค่ะ 👇',say:'หญิ เต่าะ',my:'ညှစ်တော့',rom:'hnyit taw'})}
+    </div>
+    <div class="row2">
+      ${card({i:3,en:'push as hard as you can',mean:'เบ่งสุดแรงเลยค่ะ 💪',say:'อา-โกน หญิ บา',my:'အားကုန် ညှစ်ပါ',rom:'aar-kon hnyit ba'})}
+      ${card({i:4,en:'the baby is here',mean:'ลูกออกมาแล้วค่ะ 👶',say:'คะ-เล ทเว-ลา ปยี',my:'ကလေး ထွက်လာပြီ',rom:'kha-lay twet-la pyi'})}
+    </div>
+  </div>`});
+
+/* ===== POSTPARTUM ===== */
+push({theme:'post',divider:true,mascot:'🍼',html:`
+  <div class="sec-num pop">PP</div>
+  <div class="big-emoji pop" style="--i:1">🍼</div>
+  <h1 class="pop" style="--i:2">คลินิกหลังคลอด</h1>
+  <p class="lead pop" style="--i:3">น้ำคาวปลา · น้ำนม · แผล · ปวดท้อง</p>`});
+
+push({theme:'post',mascot:'🩹',html:`
+  <div class="slide-title pop">ตรวจหลังคลอด — 4 คำถามเร็ว</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'lochia — how many pads? soaked?',mean:'น้ำคาวปลาออกมากไหม ใช้ผ้าอนามัยกี่แผ่น ชุ่มไหมคะ',say:'ทเว-สิน เบ-เลาะ ชิ แล · แพะ-ตี เบ-นะ-แต่ สิ-ลา',my:'သွေးဆင်း ဘယ်လောက် ရှိလဲ၊ ပက်တီ ဘယ်နှစ်ထည် စိုလဲ',rom:'thway-sin beh-lauk…',warn:true})}
+    ${card({i:2,en:'is your milk flowing well?',mean:'นมไหลดีไหมคะ',say:'โน้ะ-เยะ เกาน์-เกาน์ ทเวะ ลา',my:'နို့ရည် ကောင်းကောင်း ထွက်လား',rom:'no-ye kaung-kaung twet lar',warn:true})}
+    <div class="row2">
+      ${card({i:3,en:'does your wound hurt?',mean:'ปวดแผลไหมคะ',say:'อะ-นา นา ลา',my:'အနာ နာလား',rom:'a-na na lar',warn:true})}
+      ${card({i:4,en:'any abdominal pain?',mean:'ปวดท้องไหมคะ',say:'ไบะ นา ลา',my:'ဗိုက် နာလား',rom:'baik na lar',warn:true})}
+    </div>
+  </div>`});
+
+/* ===== ACTIVITY ===== */
+push({theme:'activity',cls:'activity',mascot:'🎭',html:`
+  <div class="act-card">
+    <span class="act-badge pop">🎯 กิจกรรม · จับคู่ซักประวัติ OB</span>
+    <div class="slide-title pop" style="--i:1" style="color:var(--coral-d)">“หมอ–คุณแม่”</div>
+    <ol class="act-steps">
+      <li class="pop" style="--i:2">คนหนึ่งเป็น<b>คุณแม่พม่า</b> กุมท้อง 🤰 อีกคนเป็น<b>เจ้าหน้าที่</b></li>
+      <li class="pop" style="--i:3">ถามชุด “ต้องถาม”: เลือดออก? น้ำเดิน? ท้องแข็ง? ลูกดิ้น?</li>
+      <li class="pop" style="--i:4">กดปุ่ม 🔊 ฟังเสียงพม่าก่อน แล้วพูดตาม — สลับบทบาท</li>
+    </ol>
+  </div>`});
+
+/* ===== GYN CLINIC ===== */
+push({theme:'gyne',divider:true,mascot:'🌸',html:`
+  <div class="sec-num pop">GYN</div>
+  <div class="big-emoji pop" style="--i:1">🌸</div>
+  <h1 class="pop" style="--i:2">คลินิกนรีเวช</h1>
+  <p class="lead pop" style="--i:3">ประจำเดือน · เลือดผิดปกติ · ตกขาว · ปวดท้องน้อย · ประวัติเพศ</p>`});
+
+push({theme:'gyne',mascot:'🗓️',html:`
+  <div class="slide-title pop">① ประวัติประจำเดือน (1/2)</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'last menstrual period?',mean:'ประจำเดือนครั้งสุดท้ายเมื่อไหร่คะ',say:'เนาะ-โซน มี-ยะ เบ-โตน-กะ แล',my:'နောက်ဆုံး မီးယပ် ဘယ်တုန်းကလဲ',rom:'nauk-son mee-yat beh-tone-ga leh'})}
+    ${card({i:2,en:'are your periods regular?',mean:'ประจำเดือนมาสม่ำเสมอไหมคะ',say:'มี-ยะ มัน-มัน ลา ลา',my:'မီးယပ် မှန်မှန် လာလား',rom:'mee-yat hman-hman la lar',warn:true})}
+    ${card({i:3,en:'how many days apart?',mean:'รอบเดือนห่างกันกี่วันคะ',say:'มี-ยะ เบ-นะ-เยะ ชา แล',my:'မီးယပ် ဘယ်နှစ်ရက် ခြားလဲ',rom:'mee-yat beh-hna-yet cha leh',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'🩸',html:`
+  <div class="slide-title pop">① ประวัติประจำเดือน (2/2)</div>
+  <div class="phrase-grid">
+    <div class="row2">
+      ${card({i:1,en:'how many days does bleeding last?',mean:'ประจำเดือนมากี่วันคะ',say:'มี-ยะ เบ-นะ-เยะ ลา แล',my:'မီးယပ် ဘယ်နှစ်ရက် လာလဲ',rom:'mee-yat beh-hna-yet la leh',warn:true})}
+      ${card({i:2,en:'is the bleeding heavy?',mean:'ประจำเดือนมาเยอะไหมคะ',say:'มี-ยะ มยา ลา',my:'မီးယပ် များလား',rom:'mee-yat mya lar',warn:true})}
+    </div>
+    <div class="row2">
+      ${card({i:3,en:'how many pads per day?',mean:'ใช้ผ้าอนามัยกี่แผ่นต่อวันคะ',say:'ตะ-เยะ แพะ-ตี เบ-นะ-แต่ ตุน แล',my:'တစ်ရက် ပက်တီ ဘယ်နှစ်ထည် သုံးလဲ',rom:'ta-yet pet-tee beh-hna-teh thone leh',warn:true})}
+      ${card({i:4,en:'do you pass blood clots?',mean:'มีลิ่มเลือดออกไหมคะ',say:'ทเว-เจ ปา ลา',my:'သွေးခဲ ပါလား',rom:'thway-khe pa lar',warn:true})}
+    </div>
+    ${card({i:5,en:'pain during period? pattern changed?',mean:'ปวดประจำเดือนไหม / ช่วงนี้เปลี่ยนไปไหมคะ',say:'มี-ยะ ลา-ชิน นา ลา · อะ-โค่-ตะ-เลาะ ปยอง แล',my:'မီးယပ်လာချိန် နာလား၊ အခုတလော ပြောင်းသွားလား',rom:'…na lar, a-khu-ta-lo pyaung lar',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'❗',html:`
+  <div class="slide-title pop">② เลือดออกผิดปกติ</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'bleed between periods?',mean:'มีเลือดออกระหว่างรอบเดือนไหมคะ',say:'มี-ยะ กยา-ดะ-เดะ-มา ทเว ทเวะ ลา',my:'မီးယပ် ကြားထဲမှာ သွေး ထွက်လား',rom:'mee-yat kya-de-hma thway twet lar',warn:true})}
+    ${card({i:2,en:'bleed after intercourse?',mean:'มีเลือดออกหลังมีเพศสัมพันธ์ไหมคะ',say:'ลีน-เซะ-ซัน-ปยี ทเว ทเวะ ลา',my:'လိင်ဆက်ဆံပြီး သွေး ထွက်လား',rom:'lein-set-san-pyi thway twet lar',warn:true})}
+    <div class="row2">
+      ${card({i:3,en:'when did it start?',mean:'เลือดออกผิดปกติเริ่มเมื่อไหร่คะ',say:'ทเว มะ-มัน-ตา เบ-โตน-กะ สะ แล',my:'သွေး မမှန်တာ ဘယ်တုန်းက စလဲ',rom:'thway ma-hman-da beh-tone-ga sa leh',warn:true})}
+      ${card({i:4,en:'could you be pregnant?',mean:'มีโอกาสตั้งครรภ์ไหมคะ',say:'โก่-วุน ยะ-นายง ลา',my:'ကိုယ်ဝန် ရနိုင်လား',rom:'ko-won ya-naing lar',warn:true})}
+    </div>
+  </div>`});
+
+push({theme:'gyne',mascot:'🌸',html:`
+  <div class="slide-title pop">③ ตกขาว / การติดเชื้อ</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'abnormal vaginal discharge?',mean:'มีตกขาวผิดปกติไหมคะ',say:'อะ-เยง-กยี มะ-มัน-บู ลา',my:'အရည်ကြည် မမှန်ဘူးလား',rom:'a-ye-kyi ma-hman-bu lar',warn:true})}
+    <div class="row2">
+      ${card({i:2,en:'what color? unusual smell?',mean:'สีอะไร / มีกลิ่นไหมคะ',say:'อะ-ยอง บา แล · อะ-นัน ชิ ลา',my:'အရောင် ဘာလဲ၊ အနံ့ ရှိလား',rom:'a-yaung ba leh, a-nan shi lar',warn:true})}
+      ${card({i:3,en:'itching or burning?',mean:'มีคันหรือแสบไหมคะ',say:'ยา ลา · ปู-เลาน์ ลา',my:'ယားလား၊ ပူလောင်လား',rom:'ya lar, pu-laung lar',warn:true})}
+    </div>
+    ${card({i:4,en:'pain during intercourse?',mean:'เจ็บเวลามีเพศสัมพันธ์ไหมคะ',say:'ลีน-เซะ-ซัน-เดะ-อะ-คา นา ลา',my:'လိင်ဆက်ဆံတဲ့အခါ နာလား',rom:'lein-set-san-deh-a-kha na lar',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'📍',html:`
+  <div class="slide-title pop">④ ปวดท้องน้อย</div>
+  <div class="phrase-grid">
+    <div class="row2">
+      ${card({i:1,en:'where exactly is the pain?',mean:'ปวดบริเวณไหนคะ',say:'เบ-เน-ยา นา แล',my:'ဘယ်နေရာ နာလဲ',rom:'beh-nay-ya na leh',warn:true})}
+      ${card({i:2,en:'when did it start?',mean:'เริ่มปวดตั้งแต่เมื่อไหร่คะ',say:'เบ-โตน-กะ สะ นา-ตา แล',my:'ဘယ်တုန်းက စ နာတာလဲ',rom:'beh-tone-ga sa na-da leh',warn:true})}
+    </div>
+    ${card({i:3,en:'related to your period?',mean:'ปวดสัมพันธ์กับประจำเดือนไหมคะ',say:'มี-ยะ-แน เซะ-ซะ ลา',my:'မီးယပ်နဲ့ ဆက်စပ်လား',rom:'mee-yat-neh set-sat lar',warn:true})}
+    ${card({i:4,en:'sudden or gradual? nausea/vomit/fever/dizzy?',mean:'ปวดทันทีหรือค่อยๆ / มีคลื่นไส้ อาเจียน ไข้ หน้ามืดไหมคะ',say:'โยะ-ตะ-เยะ นา ลา · ปโย่-อาน · ปยา · มู-เว ชิ ลา',my:'ရုတ်တရက် နာလား၊ ပျို့အန်၊ ဖျား၊ မူးဝေ ရှိလား',rom:'yote-ta-yet na lar…',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'🤝',html:`
+  <div class="slide-title pop">⑤ ประวัติเพศ — เปิดอย่างสบายใจ</div>
+  <div class="note-box pop" style="--i:1" style="max-width:820px;border-left-color:var(--lilac)">
+    เปิดด้วยประโยคนี้ก่อน เพื่อให้คนไข้สบายใจ:<br>
+    <b style="color:#6d28d9">“ดิฉันถามคำถามเหล่านี้กับผู้ป่วยทุกคนนะคะ เพราะมีผลต่อสุขภาพนรีเวช”</b>
+  </div>
+  <div class="phrase-grid pop" style="--i:2" style="max-width:820px;margin-top:.6rem">
+    ${card({en:'these questions are for your health',mean:'คำถามพวกนี้เพื่อสุขภาพของคุณค่ะ',say:'ดี เม-กเวน-ดเว-กะ จาน-มา-เย อะ-ตเวะ ปา',my:'ဒီ မေးခွန်းတွေက ကျန်းမာရေးအတွက်ပါ',rom:'di may-khun-dwe-ga jan-ma-ye a-twet pa',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'💬',html:`
+  <div class="slide-title pop">⑤ ประวัติเพศ — คำถาม</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'currently sexually active?',mean:'ปัจจุบันมีเพศสัมพันธ์ไหมคะ',say:'อะ-โค่ ลีน-เซะ-ซัน-มู ชิ ลา',my:'အခု လိင်ဆက်ဆံမှု ရှိလား',rom:'a-khu lein-set-san-hmu shi lar',warn:true})}
+    ${card({i:2,en:'partners — men, women, or both?',mean:'คู่นอนเป็นผู้ชาย ผู้หญิง หรือทั้งสองเพศคะ',say:'เละ-ตแว-โบ๊ะ ยอก-จา · มิน-มะ · หนะ-มโย-โลน ลา',my:'လက်တွဲဖော် ယောက်ျား၊ မိန်းမ၊ နှစ်မျိုးလုံးလား',rom:'let-twe-baw yauk-ja, mein-ma…',warn:true})}
+    ${card({i:3,en:'one partner or more?',mean:'มีคู่นอนคนเดียวหรือมากกว่าหนึ่งคนคะ',say:'เละ-ตแว-โบ๊ะ ตะ-เยาะ ลา · ตะ-เยาะ-ตเวะ ปโย ลา',my:'လက်တွဲဖော် တစ်ယောက်လား၊ တစ်ယောက်ထက် ပိုလား',rom:'…ta-yauk lar…',warn:true})}
+    ${card({i:4,en:'do you use condoms? ever had an STI?',mean:'ใช้ถุงยางไหม / เคยเป็นโรคติดต่อทางเพศไหมคะ',say:'กง-โดน โตน ลา · ลีน-กะ กู-เซะ-โย-กา ชิ-บู ลา',my:'ကွန်ဒုံး သုံးလား၊ လိင်မှ ကူးစက်ရောဂါ ရှိဖူးလား',rom:'kon-doun thone lar…',warn:true})}
+  </div>`});
+
+push({theme:'gyne',mascot:'💊',html:`
+  <div class="slide-title pop">⑥ การคุมกำเนิด</div>
+  <div class="phrase-grid">
+    <div class="row2">
+      ${card({i:1,en:'currently using contraception?',mean:'ตอนนี้คุมกำเนิดด้วยวิธีอะไรคะ',say:'อะ-โค่ เบ-โล โก่-วุน ตา แล',my:'အခု ဘယ်လို ကိုယ်ဝန် တားလဲ',rom:'a-khu beh-lo ko-won ta leh',warn:true})}
+      ${card({i:2,en:'missed any pills?',mean:'มีลืมกินยาคุมไหมคะ',say:'โก่-วุน-ตา-เส เมะ-ตวา ลา',my:'ကိုယ်ဝန်တားဆေး မေ့သွားလား',rom:'ko-won-ta-say me-thwa lar',warn:true})}
+    </div>
+    <div class="row2">
+      ${card({i:3,en:'planning to become pregnant?',mean:'มีแผนตั้งครรภ์ไหมคะ',say:'โก่-วุน ยู บอ สีด-กู ชิ ลา',my:'ကိုယ်ဝန် ယူဖို့ စိတ်ကူး ရှိလား',rom:'ko-won yu-bo seit-ku shi lar',warn:true})}
+      ${card({i:4,en:'last unprotected intercourse?',mean:'มีเพศสัมพันธ์ไม่ป้องกันครั้งล่าสุดเมื่อไหร่คะ',say:'เนาะ-โซน อะ-กา-อะ-กแวะ-แม่ ลีน-เซะ-ซัน-ตา เบ-โตน-กะ แล',my:'နောက်ဆုံး အကာအကွယ်မဲ့ လိင်ဆက်ဆံတာ ဘယ်တုန်းကလဲ',rom:'nauk-son a-ka-a-kwe-me…',warn:true})}
+    </div>
+  </div>`});
+
+push({theme:'gyne',mascot:'🔬',html:`
+  <div class="slide-title pop">⑦ คัดกรองมะเร็งปากมดลูก + ประวัติผ่าตัด</div>
+  <div class="phrase-grid">
+    ${card({i:1,en:'ever had Pap smear or HPV test? result normal?',mean:'เคยตรวจ Pap smear / HPV ไหม ผลปกติไหมคะ',say:'Pap · HPV สิด-บู ลา · ยะ-เละ ปน-มัน ลา',my:'Pap smear (သို့) HPV စစ်ဖူးလား၊ ရလဒ် ပုံမှန်လား',rom:'…sit-bu lar, ya-let poun-hman lar',warn:true})}
+    ${card({i:2,en:'received the HPV vaccine?',mean:'เคยฉีดวัคซีน HPV ไหมคะ',say:'HPV กา-กแวะ-เซ โท้-บู ลา',my:'HPV ကာကွယ်ဆေး ထိုးဖူးလား',rom:'HPV ka-kwe-say to-bu lar',warn:true})}
+    ${card({i:3,en:'any gynecologic surgery? cyst/fibroid/endometriosis/PCOS?',mean:'เคยผ่าตัดนรีเวช / มีถุงน้ำรังไข่ เนื้องอกมดลูก เยื่อบุฯ หรือ PCOS ไหมคะ',say:'(ดูคำอังกฤษ — ศัพท์เทคนิค)',my:'မိန်းမကိုယ် ခွဲစိတ်ဖူးလား? (ovarian cyst / fibroid / endometriosis / PCOS)',rom:'mein-ma-ko khwe-seik-bu lar?',warn:true})}
+  </div>`});
+
+/* ===== ACTIVITY 2 ===== */
+push({theme:'activity',cls:'activity',mascot:'🌷',html:`
+  <div class="act-card">
+    <span class="act-badge pop">🎯 กิจกรรม · ซักประวัติแบบอ่อนโยน</span>
+    <div class="slide-title pop" style="--i:1" style="color:var(--coral-d)">GYN role-play</div>
+    <ol class="act-steps">
+      <li class="pop" style="--i:2">เปิดด้วยประโยคสร้างความสบายใจ (ประวัติเพศ) ก่อนเสมอ 🌸</li>
+      <li class="pop" style="--i:3">เดินชุดคำถาม: ประจำเดือน → เลือดผิดปกติ → ตกขาว → ปวดท้องน้อย</li>
+      <li class="pop" style="--i:4">กด 🔊 ฟังก่อน พูดตาม — ใครลื่นสุดได้ดาว ⭐</li>
+    </ol>
+  </div>`});
+
+/* ===== FINALE ===== */
+push({theme:'summary',mascot:'⭐',html:`
+  <div class="slide-title pop">⭐ 10 คำถามที่ห้ามลืม (คลินิกเร่งด่วน)</div>
+  <div class="list10 pop" style="--i:1">
+    <div><span class="n">1</span>ประจำเดือนครั้งสุดท้าย (LMP)</div>
+    <div><span class="n">2</span>มีโอกาสตั้งครรภ์ไหม</div>
+    <div><span class="n">3</span>มีเลือดออกไหม</div>
+    <div><span class="n">4</span>ปวดท้อง/ท้องน้อยไหม</div>
+    <div><span class="n">5</span>ตกขาวผิดปกติ / มีไข้ไหม</div>
+    <div><span class="n">6</span>ประจำเดือนสม่ำเสมอ + ปริมาณ</div>
+    <div><span class="n">7</span>มีเพศสัมพันธ์ / คุมกำเนิด</div>
+    <div><span class="n">8</span>ประวัติครรภ์ก่อน + ผลลัพธ์</div>
+    <div><span class="n">9</span>ประวัติ Pap / HPV</div>
+    <div><span class="n">10</span>ถ้าท้อง: ลูกดิ้น + น้ำเดิน + ท้องแข็ง + อาการครรภ์เป็นพิษ</div>
+  </div>`});
+
+push({theme:'summary',mascot:'🧠',html:`
+  <div class="slide-title pop">ประโยคเดียวสำหรับคนไข้ตั้งครรภ์ทุกคน 🤰</div>
+  <div class="oneliner pop" style="--i:1">
+    <div class="seq">🩸 เลือดออก? → 💧 น้ำเดิน? → 🤰 ท้องแข็ง? →<br>👶 ลูกดิ้น? → 🤕 ปวดหัว? → 👁️ ตามัว? → 🔥 เจ็บลิ้นปี่?</div>
+  </div>
+  <p class="lead pop" style="--i:2" style="margin-top:1rem;max-width:34ch">ถามครบ 7 อย่างนี้ = คัดกรองภาวะอันตรายในครรภ์ได้เกือบหมด</p>`});
+
+push({theme:'summary',mascot:'💡',html:`
+  <div class="slide-title pop">ก่อนใช้จริง 💡 (สำคัญมาก)</div>
+  <div class="note-box pop" style="--i:1">
+    <b>🔊 เสียง:</b> ปุ่มฟังเสียงใช้เสียงพม่าจริงจากออนไลน์ — ต้อง<b>เชื่อมอินเทอร์เน็ต</b>ตอนพรีเซนต์ (ลองเทสต์บนเครื่อง+เน็ตของ รพ. ก่อน) ถ้าเน็ตไม่ได้ ระบบจะลองใช้เสียงพม่าของเครื่องแทน (ถ้าติดตั้งไว้)<br><br>
+    <b>⚠️ ความถูกต้อง:</b> ประโยคที่ติดป้าย ⚠️ เป็นคำแปลที่<b>ยังไม่ได้ยืนยันโดยเจ้าของภาษา</b> (sandbox บล็อกเครื่องมือแปล) — กรุณาให้<b>เพื่อนร่วมงาน/ล่ามที่พูดพม่า</b> ช่วยตรวจก่อนใช้กับคนไข้จริง ส่วนที่ติด ✓ มาจากคู่มือแพทย์<br><br>
+    💚 <b>ทางที่ดีที่สุด:</b> อัดเสียงเพื่อนที่พูดพม่าอ่านประโยคเหล่านี้ แล้วส่งกลับมา เดี๋ยวฝังเสียงจริงให้แทนได้เลย
+  </div>`});
+
+push({theme:'intro',mascot:'💚',html:`
+  <div class="mascot pop">🙏🤰👶</div>
+  <h1 class="pop" style="--i:1;font-family:'Noto Sans Myanmar','Baloo 2';font-size:clamp(1.8rem,5.5vw,3.6rem);color:var(--mint-d)">ကျေးဇူးတင်ပါတယ်</h1>
+  <div class="subtitle pop" style="--i:2">(เจ-ซู-ติน-บา-แด — ขอบคุณค่ะ) ${spk('ကျေးဇူးတင်ပါတယ်','play-btn mini')}</div>
+  <p class="lead pop" style="--i:3" style="margin-top:.8em">คำถามไม่กี่คำ = ความปลอดภัยและความอุ่นใจที่ใหญ่มากสำหรับคนไข้ 💚</p>
+  <div class="pop" style="--i:4;margin-top:.8em;display:flex;flex-direction:column;align-items:center;gap:.35em">
+    <img src="data:image/png;base64,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" alt="QR code" style="width:clamp(110px,17vh,168px);height:auto;border-radius:16px;box-shadow:0 10px 24px rgba(40,65,74,.18);background:#fff;padding:8px">
+    <div style="font-weight:700;color:var(--ink-soft);font-size:clamp(.78rem,1.6vw,1rem)">📱 สแกนเปิดสไลด์นี้บนมือถือ · <b style="color:var(--mint-d)">iamvivieth.github.io/obgyn-burmese</b></div>
+  </div>
+  <div class="ram pop" style="--i:5;margin-top:.9em"><span class="mic">👏</span> ปรบมือให้ตัวเอง!</div>`});
+
+/* ---------- RENDER ---------- */
+const deck = document.getElementById('deck');
+S.forEach((s,idx)=>{
+  const el = document.createElement('section');
+  el.className = 'slide ' + (s.cls||'') + (s.divider?' divider':'');
+  el.innerHTML = `<div class="blob b1"></div><div class="blob b2"></div>${s.html}` + (s.mascot?`<div class="corner-mascot">${s.mascot}</div>`:'');
+  deck.appendChild(el);
+});
+const slides = [...document.querySelectorAll('.slide')];
+let cur = 0, lastDir = 1;
+function applyTheme(i){
+  const t = THEMES[S[i].theme] || THEMES.intro; const r = document.documentElement.style;
+  r.setProperty('--accent',t.a); r.setProperty('--accent-d',t.ad); r.setProperty('--bg1',t.b1); r.setProperty('--bg2',t.b2);
+}
+function show(i){
+  i = Math.max(0, Math.min(S.length-1, i));
+  if(typeof stopAudio==='function') stopAudio();
+  lastDir = i>=cur ? 1 : -1;
+  slides.forEach(s=>s.classList.remove('active','back'));
+  applyTheme(i);
+  const el = slides[i]; if(lastDir<0) el.classList.add('back');
+  void el.offsetWidth; el.classList.add('active'); cur = i;
+  document.getElementById('bar').style.width = ((i+1)/S.length*100)+'%';
+  document.getElementById('counter').textContent = `${i+1} / ${S.length}`;
+}
+function next(){ if(cur<S.length-1) show(cur+1) }
+function prev(){ if(cur>0) show(cur-1) }
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next()}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev()}
+  else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(S.length-1)}
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.changedTouches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){dx<0?next():prev()}},{passive:true});
+document.getElementById('deck').addEventListener('click',e=>{
+  const pb = e.target.closest('.play-btn');
+  if(pb){ e.stopPropagation(); playAu(pb); return; }
+  if(!e.target.closest('.nav-btn')) next();
+});
+
+/* ---------- BURMESE AUDIO (real voice at runtime) ---------- */
+/* No audio is bundled (offline synths mispronounce Burmese). On click we play a
+   REAL Burmese voice: 1) online Google TTS, 2) the device's own Burmese voice.
+   Needs internet for best result; offline falls back to a device voice if installed. */
+let voiceMode = 'online';   // 'online' = Google TTS · 'device' = OS Burmese voice
+let curAudio = null, myVoice = null;
+function loadVoices(){
+  try{
+    const vs = speechSynthesis.getVoices();
+    myVoice = vs.find(v=>/(^|[-_ ])my([-_].*)?$/i.test(v.lang)) || vs.find(v=>/burm|myanmar/i.test(v.name));
+  }catch(e){}
+}
+if('speechSynthesis' in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function stopAudio(){
+  if(curAudio){ try{curAudio.pause();}catch(e){} curAudio=null; }
+  if('speechSynthesis' in window){ try{speechSynthesis.cancel();}catch(e){} }
+  document.querySelectorAll('.play-btn.playing,.play-btn.loading').forEach(b=>b.classList.remove('playing','loading'));
+}
+function gUrls(txt){
+  const q = encodeURIComponent(txt);
+  return [
+    'https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=my&q='+q,
+    'https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=my&q='+q
+  ];
+}
+function speakDevice(txt, done){
+  if(!('speechSynthesis' in window) || !myVoice){ done(false); return; }
+  try{
+    const u = new SpeechSynthesisUtterance(txt);
+    u.voice = myVoice; u.lang = myVoice.lang || 'my-MM'; u.rate = .8;
+    u.onend = ()=>done(true); u.onerror = ()=>done(false);
+    speechSynthesis.speak(u);
+  }catch(e){ done(false); }
+}
+function tryUrls(urls, done){
+  let i = 0;
+  const attempt = ()=>{
+    if(i>=urls.length){ done(false); return; }
+    const a = new Audio(); curAudio = a; let started=false;
+    a.src = urls[i++];
+    a.onplaying = ()=>{ started=true; };
+    a.onended = ()=>{ done(true); curAudio=null; };
+    a.onerror = ()=>{ if(!started) attempt(); else { done(false); curAudio=null; } };
+    const p = a.play();
+    if(p && p.catch) p.catch(()=>{ if(!started) attempt(); });
+  };
+  attempt();
+}
+function playAu(btn){
+  const txt = btn.dataset.my; if(!txt) return;
+  stopAudio();
+  btn.classList.add('playing','loading');
+  const finish = (ok)=>{ btn.classList.remove('playing','loading'); if(!ok) toast('เล่นเสียงไม่ได้ — ตรวจอินเทอร์เน็ต แล้วกดใหม่ (หรือสลับเป็นเสียงเครื่องมุมขวาบน)'); };
+  const goOnline = ()=> tryUrls(gUrls(txt),(ok)=> ok ? finish(true) : speakDevice(txt,(ok2)=>finish(ok2)));
+  if(voiceMode==='device'){
+    speakDevice(txt,(ok)=> ok ? finish(true) : goOnline());
+  } else {
+    goOnline();
+  }
+}
+const modeBtn = document.getElementById('audio-mode');
+function renderMode(){ modeBtn.innerHTML = voiceMode==='device' ? '📱 เสียง: <b>เครื่อง</b>' : '🌐 เสียง: <b>ออนไลน์</b>'; }
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3400); }
+modeBtn.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  voiceMode = voiceMode==='online' ? 'device' : 'online'; renderMode();
+  toast(voiceMode==='online' ? 'เสียงออนไลน์ (Google · ต้องมีเน็ต · ตรงที่สุด)' : 'เสียงของเครื่อง (ถ้าติดตั้งภาษาพม่า · ออฟไลน์ได้)');
+});
+renderMode();
+show(0);
+</script>
+</body>
+</html>
